@@ -23,6 +23,12 @@ function Header() {
     });
   }, []);
 
+  const [mobileNav, setMobileNav] = useState(false);
+  function handleMobileNav(e) {
+    e.preventDefault();
+    setMobileNav((nav) => !nav);
+  }
+
   return (
     <header className={headerClass}>
       <div className="container">
@@ -31,34 +37,25 @@ function Header() {
             <Logo />
           </Link>
         </div>
-        <div className="layer"></div>
+        <div className={`layer ${mobileNav ? "layer-is-visible" : ""}`}></div>
         <HeaderCart />
-        <a href="#0" className="open_close">
+        <Link className="open_close" onClick={handleMobileNav}>
           <i className="icon_menu"></i>
           <span>Menu </span>
-        </a>
-        <nav className="main-menu">
+        </Link>
+        <nav className={`main-menu ${mobileNav ? "show" : ""}`}>
           <div id="header_menu">
-            <a href="#0" className="open_close">
+            <Link className="open_close" onClick={handleMobileNav}>
               <i className="icon_close"></i>
               <span>Menu </span>
-            </a>
+            </Link>
             <Link to="/">
               <img src={LogoImg} width="162" height="35" alt="" />
             </Link>
           </div>
           <ul>
-            <li className="submenu">
+            <li>
               <Link to="/">Home</Link>
-
-              {/* <a href="#0" className="show-submenu">
-                Home
-              </a>
-              <ul>
-                <li>
-                  <a href="index.html">Address Autocomplete </a>
-                </li>
-              </ul> */}
             </li>
             <li>
               <Link to="/restaurant">Restaurants</Link>

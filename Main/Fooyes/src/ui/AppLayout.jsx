@@ -14,7 +14,7 @@ const containerStyle = {
 };
 
 function AppLayout() {
-  const position = useSelector((state) => state.user.address);
+  const position = useSelector((state) => state.user.position);
 
   const { pathname } = useLocation();
   const hideFooter = pathname.includes("restaurant");

@@ -3,29 +3,50 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { updatePosition } from "../services/userSlice";
 import { place_ID, search_API_URL } from "../services/constant";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useNavigation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAddress } from "../services/userSlice";
 
-const AutocompleteLocation = () => {
+function AutocompleteLocation() {
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+
   const [myOptions, setMyOptions] = useState([]);
   const [select, setSelect] = useState([]);
   const dispatch = useDispatch();
+  const {
+    status: addressStatus,
+    position,
+    address,
+    error: errorAddress,
+  } = useSelector((state) => state.user);
+  const isLoadingAddress = addressStatus === "loading";
+
+  const [placeHolder, setPlaceHolder] = useState(
+    "Enter Your Delivery Location"
+  );
+
+  const [error, setError] = useState({});
+  const [fieldValue, setFieldValue] = useState({});
 
   async function getPlaceRes(addressVal) {
-    const data = await fetch(search_API_URL + addressVal);
-    const res = await data.json();
-    myOptions.length = 0;
-    // console.log(res);
-    for (var i = 0; i < res.data.length; i++) {
-      myOptions.push({
-        label: res.data[i].description,
-        id: res.data[i].place_id,
+    const strLen = addressVal.length;
+    if (strLen > 2) {
+      const controller = new AbortController();
+      const data = await fetch(search_API_URL + addressVal, {
+        signal: controller.signal,
       });
+      const res = await data.json();
+      myOptions.length = 0;
+      for (var i = 0; i < res.data.length; i++) {
+        myOptions.push({
+          label: res.data[i].description,
+          id: res.data[i].place_id,
+        });
+      }
+      // console.log(res?.data);
+      setMyOptions(myOptions);
     }
-    // console.log(res?.data);
-    setMyOptions(myOptions);
-    // console.log(myOptions);
-    // return data;
   }
   async function getGeoCode(id) {
     const data = await fetch(place_ID + id);
@@ -42,51 +63,85 @@ const AutocompleteLocation = () => {
     setSelect(select);
     if (select.length > 0) return dispatch(updatePosition(select[0].label));
   }
-  //   console.log(select);
+
+  function handleFetchAddress(e) {
+    e.preventDefault();
+    setError({});
+    dispatch(fetchAddress());
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!position || !address) {
+      const errorVal =
+        fieldValue.length > 2
+          ? "Enter Valid Location"
+          : "Enter Your Delivery Location";
+      setError({ addressError: errorVal });
+    }
+  }
+  console.log(error);
   return (
-    <div className="input-group mb-3">
-      <Autocomplete
-        name="search"
-        style={{ width: "75%" }}
-        freeSolo
-        autoComplete
-        autoHighlight
-        options={myOptions}
-        onChange={(e, value) => {
-          //   console.log(value);
-          getGeoCode(value?.id);
-        }}
-        getOptionLabel={(option) =>
-          typeof option === "string" ? option : option.label
-        }
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            onChange={(e) => {
-              getPlaceRes(e.target.value);
-            }}
-            variant="outlined"
-            placeholder="Enter Your Delivery Location"
-          />
-        )}
-        size="small"
-      />
-      <div className="input-group-append">
-        <Link
-          //   disabled={isLoadingAddress}
-          //   onClick={(e) => {
-          //     e.preventDefault();
-          //     dispatch(fetchAddress());
-          //   }}
-          className="btn_1 medium "
-          type="button"
-          style={{ height: "-webkit-fill-available" }}
-        >
-          Locate Me
-        </Link>
+    <form onSubmit={handleSubmit}>
+      <div className="input-group mb-3">
+        <Autocomplete
+          name="search"
+          style={{ width: "75%" }}
+          freeSolo
+          autoComplete
+          autoHighlight
+          options={myOptions}
+          onInputChange={(event, newInputValue, reason) => {
+            if (reason === "reset") {
+              setFieldValue("");
+              return;
+            } else {
+              setFieldValue(newInputValue);
+            }
+          }}
+          onChange={(e, value) => {
+            //   console.log(value);
+            getGeoCode(value?.id);
+          }}
+          getOptionLabel={(option) =>
+            typeof option === "string" ? option : option.label
+          }
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              onChange={(e) => {
+                getPlaceRes(e.target.value);
+              }}
+              variant="outlined"
+              placeholder={placeHolder}
+            />
+          )}
+          size="small"
+        />
+        <div className="input-group-append">
+          <Link
+            disabled={isLoadingAddress}
+            onClick={handleFetchAddress}
+            className="btn_1 medium "
+            type="button"
+            style={{ height: "-webkit-fill-available" }}
+          >
+            Locate Me
+          </Link>
+        </div>
       </div>
-    </div>
+      <div id="pass-info" className="clearfix"></div>
+      <button disabled={isLoadingAddress} className="btn_1 gradient full-width">
+        Find Food
+      </button>
+      {!fieldValue.length && addressStatus === "error" && (
+        <p className="mt-2 alert alert-danger">{errorAddress}</p>
+      )}
+      {error && error.addressError && (
+        <p className="mt-2 alert alert-danger">{error.addressError}</p>
+      )}
+    </form>
   );
-};
+}
 
 export default AutocompleteLocation;
