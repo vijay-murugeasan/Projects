@@ -29,14 +29,14 @@ function Cart({ height }) {
               {cart.map((item, index) => {
                 return (
                   <li key={item.id}>
-                    <a
+                    <Link
                       href="#0"
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(deleteItem(item.id));
                       }}
                       style={{ wordWrap: "break-word", width: "70%" }}
-                    >{`${item.quantity}x ${item.name}`}</a>
+                    >{`${item.quantity}x ${item.name}`}</Link>
                     <span>{formatCurrency(item.totalPrice)} </span>
                   </li>
                 );

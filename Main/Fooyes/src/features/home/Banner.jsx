@@ -7,7 +7,7 @@ function Banner() {
             <div className="col-xl-7 col-lg-8">
               <h1>Delivery or Takeaway Food</h1>
               <p>The best restaurants at ___ best price</p>
-              <form method="post" action="listing-map.html">
+              <div method="post">
                 <div className="row g-0 custom-search-input">
                   <div className="col-lg-10">
                     <div className="form-group">
@@ -42,7 +42,7 @@ function Banner() {
                     </li>
                   </ul>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>

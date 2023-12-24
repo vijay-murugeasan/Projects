@@ -13,7 +13,7 @@ function RestaurantItem({ item }) {
     sla,
     veg,
   } = item;
-  console.log(item);
+  // console.log(item);
   // console.log("cuisines", cuisines);
   // const { category, deliveryType, title, address, img } = item.item;
   const delivery = "yes";

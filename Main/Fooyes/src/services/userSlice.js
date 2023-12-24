@@ -40,8 +40,10 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     updatePosition(state, action) {
-      console.log(action)
-      state.position = { latitude: action.payload.lat, longitude: action.payload.lng };
+      // console.log(action)
+      state.position = { latitude: action.payload.label.lat, longitude: action.payload.label.lng };
+      state.address = action.payload.address;
+
     },
   },
   extraReducers: (builder) =>

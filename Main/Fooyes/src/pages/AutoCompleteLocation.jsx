@@ -57,11 +57,12 @@ function AutocompleteLocation() {
       select.push({
         label: res.data[i].geometry.location,
         id: res.data[i].place_id,
+        address: res.data[i].formatted_address,
       });
     }
     // console.log(res?.data);
     setSelect(select);
-    if (select.length > 0) return dispatch(updatePosition(select[0].label));
+    if (select.length > 0) return dispatch(updatePosition(select[0]));
   }
 
   function handleFetchAddress(e) {
@@ -80,7 +81,7 @@ function AutocompleteLocation() {
       setError({ addressError: errorVal });
     }
   }
-  console.log(error);
+  // console.log(error);
   return (
     <form onSubmit={handleSubmit}>
       <div className="input-group mb-3">

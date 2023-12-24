@@ -7,7 +7,6 @@ import HeaderCart from "./HeaderCart";
 function Header() {
   const [scrollTopData, setScrollTopData] = useState("");
   const { pathname } = useLocation();
-
   const headerClass =
     pathname === "/"
       ? `header black_nav clearfix element_to_stick ${scrollTopData}`
@@ -24,10 +23,6 @@ function Header() {
   }, []);
 
   const [mobileNav, setMobileNav] = useState(false);
-  function handleMobileNav(e) {
-    e.preventDefault();
-    setMobileNav((nav) => !nav);
-  }
 
   return (
     <header className={headerClass}>
@@ -39,13 +34,13 @@ function Header() {
         </div>
         <div className={`layer ${mobileNav ? "layer-is-visible" : ""}`}></div>
         <HeaderCart />
-        <Link className="open_close" onClick={handleMobileNav}>
+        <Link className="open_close" onClick={() => setMobileNav(true)}>
           <i className="icon_menu"></i>
           <span>Menu </span>
         </Link>
         <nav className={`main-menu ${mobileNav ? "show" : ""}`}>
           <div id="header_menu">
-            <Link className="open_close" onClick={handleMobileNav}>
+            <Link className="open_close" onClick={() => setMobileNav(false)}>
               <i className="icon_close"></i>
               <span>Menu </span>
             </Link>
@@ -55,14 +50,20 @@ function Header() {
           </div>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/" onClick={() => setMobileNav(false)}>
+                Home
+              </Link>
             </li>
             <li>
-              <Link to="/restaurant">Restaurants</Link>
+              <Link to="/restaurant" onClick={() => setMobileNav(false)}>
+                Restaurants
+              </Link>
             </li>
 
             <li>
-              <Link to="/contact">Contacts</Link>
+              <Link to="/contact" onClick={() => setMobileNav(false)}>
+                Contacts
+              </Link>
             </li>
           </ul>
         </nav>

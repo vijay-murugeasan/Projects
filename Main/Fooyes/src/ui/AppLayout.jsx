@@ -21,7 +21,7 @@ function AppLayout() {
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
 
-  return position === "" ? (
+  return !Object.keys(position).length ? (
     <div id="register_bg">
       <Location />
     </div>

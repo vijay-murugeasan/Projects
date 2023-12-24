@@ -31,7 +31,7 @@ function Location() {
 export async function action({ request }) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-  console.log(data);
+  // console.log(data);
   const errors = {};
   if (!data.address) errors.address = "Enter Your Delivery Location";
 
